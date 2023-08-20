@@ -1,5 +1,5 @@
 #!/usr/bin/python
-# added comment
+# added comment2
 # This is a simple echo bot using the decorator mechanism.
 # It echoes any incoming text messages.
 
