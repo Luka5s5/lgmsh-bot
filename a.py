@@ -5,6 +5,8 @@
 
 import telebot
 from telebot import types
+from mem import generate_meme
+
 
 API_TOKEN = '6625958872:AAGbyN_pk5Zcf2jDcZFTTYCZbu4YA_beYTs'
 
@@ -50,11 +52,32 @@ def test_button(message):
     bot.reply_to(message, "Choose one letter:", reply_markup=markup)
 
 
+@bot.message_handler(content_types=['photo'])
+def download_photo(message):
+    file_info = bot.get_file(message.photo[len(message.photo) - 1].file_id)
+    downloaded_file = bot.download_file(file_info.file_path)
+    src = 'photos/' + message.photo[1].file_id
+    with open(src, 'wb') as new_file:
+        new_file.write(downloaded_file)
+   # print(message.caption.split("\n"))
+    l=[]
+    if message.caption is None:
+        l=['Вставьте текст','Вставьте текст']
+    else:
+        l=message.caption.split('\n')
+        if len(l)<2:
+            l.append('Вставьте текст')
+    name= generate_meme(src,l[0],l[1])
+    photo = open(name, 'rb')
+    bot.send_photo(message.from_user.id, photo)
+
+
 
 # Handle all other messages with content_type 'text' (content_types defaults to ['text'])
-@bot.message_handler(func=lambda message: True)
+@bot.message_handler(func=lambda message: True, content_types=['photo','text'])
 def echo_message(message):
-    bot.reply_to(message, message.text)
+    print(message)
+   #bot.reply_to(message, message.text)
 
 
 bot.infinity_polling()

@@ -1,4 +1,5 @@
 from PIL import Image, ImageDraw, ImageFont
+from random import randint
 
 def generate_meme(path,txt1,txt2):
     im1 = Image.open("mem-lgmsh2.jpg")
@@ -13,11 +14,13 @@ def generate_meme(path,txt1,txt2):
     f = ImageFont.truetype("Ubuntu-Regular.ttf", 50)
     l=f.getlength(txt2)
     imDraw.text(((1277-l)/2,617),txt2,font=f)
-    im1.save("test.jpeg",mod="jpeg")
-    im1.show()
+    name = 'photos/'+hex(randint(2,2**128))[2:]+'.jpeg'
+    im1.save(name,mod="jpeg")
+    return name
 
-path=input()
-txt1=input()
-txt2=input()
-generate_meme(path,txt1,txt2)
+if __name__ == "__main__":
+    path=input()
+    txt1=input()
+    txt2=input()
+    generate_meme(path,txt1,txt2)
 
