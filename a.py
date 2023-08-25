@@ -6,6 +6,7 @@
 import telebot, os
 from telebot import types
 from mem import generate_meme
+from datefact import factsoftheday
 
 
 API_TOKEN = '6625958872:AAGbyN_pk5Zcf2jDcZFTTYCZbu4YA_beYTs'
@@ -24,6 +25,10 @@ I am here to echo your kind words back to you. Just say anything nice and I'll s
 text=''
 text_commands=[]
 command_to_text = {}
+
+@bot.message_handler(commands=['datefact'])
+def give_fact(message):
+    bot.reply_to(message,factsoftheday())
 
 @bot.message_handler(commands=['add_command'])
 def set_location(message):
