@@ -7,7 +7,7 @@ import telebot, os
 from telebot import types
 from mem import generate_meme
 from datefact import factsoftheday
-
+from logo import create_picture
 
 API_TOKEN = '6625958872:AAGbyN_pk5Zcf2jDcZFTTYCZbu4YA_beYTs'
 
@@ -77,6 +77,13 @@ def download_photo(message):
     bot.send_photo(message.from_user.id, photo)
     os.remove(name)
     os.remove(src)
+
+@bot.message_handler(commands=['logo'])
+def send_logo(message):
+    name = create_picture()
+    photo = open(name, 'rb')
+    bot.send_photo(message.from_user.id,photo)
+    os.remove(name)
 
 
 
