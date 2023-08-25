@@ -3,7 +3,7 @@
 # This is a simple echo bot using the decorator mechanism.
 # It echoes any incoming text messages.
 
-import telebot
+import telebot, os
 from telebot import types
 from mem import generate_meme
 
@@ -70,6 +70,8 @@ def download_photo(message):
     name= generate_meme(src,l[0],l[1])
     photo = open(name, 'rb')
     bot.send_photo(message.from_user.id, photo)
+    os.remove(name)
+    os.remove(src)
 
 
 
