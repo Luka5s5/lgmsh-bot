@@ -14,7 +14,8 @@ def create_picture():
     text = "ЛГМШ"
     font_path = f"fonts/{random.choice(fond_fonts)}"
     font = ImageFont.truetype(font_path, 120, encoding="utf-8")
-    
+    pattern = random.randint(0, 2)
+
     #choose a color
     random_colors_set = random.choice(coolors)[:]
     random.shuffle(random_colors_set)
@@ -22,7 +23,7 @@ def create_picture():
 
     color_of_backside = random_colors_set[dark_set.index(min(dark_set))]
     del random_colors_set[dark_set.index(min(dark_set))], dark_set[dark_set.index(min(dark_set))]
-    
+
     color_of_font = random_colors_set[dark_set.index(max(dark_set))]
     del random_colors_set[dark_set.index(max(dark_set))], dark_set[dark_set.index(max(dark_set))]
 
@@ -30,33 +31,35 @@ def create_picture():
 
     img = Image.new('RGB', (CANVAS_SIZE, CANVAS_SIZE), color_of_backside)
     draw = ImageDraw.Draw(img)
-    
+
     #ornament pattern
     for row in range(DENSITY):
         for col in range(DENSITY):
-            draw_line(row, col, CANVAS_SIZE, DENSITY, draw, color_of_lines)
-    
+            draw_line(row, col, CANVAS_SIZE, DENSITY, draw, color_of_lines, pattern)
+
     f = random.randint(-10, 10)
-    
+
     #sun and text 138
     index_of_sun_pattern = random.randint(0, 1)
-    size_of_font = font.getsize(text)
+    left, top, right, bottom = font.getbbox(text)
+    size_of_font = right - left, bottom - top
+    # size_of_font = font.getsize(text)
     size_of_sun = int(sum(map(lambda x: x ** 2, size_of_font)) ** (1 / 2) * 512 / sun_radius[index_of_sun_pattern]) + size_of_font[1] // 2
     sun = Image.open(f"sun{index_of_sun_pattern}.png").resize((size_of_sun, size_of_sun), Image.Resampling.LANCZOS)
-    
+
     fontimage = Image.new('L', (size_of_sun, size_of_sun))
     text_w, text_h = fontimage.size
     fontimage.paste(255, box=(0, 0), mask=sun)
     ImageDraw.Draw(fontimage).text((text_w // 2, text_h // 2), text, anchor="mm", fill=255, font=font)
     fontimage = fontimage.rotate(f, resample=Image.BICUBIC, expand=True)
     img.paste(color_of_font, box=((CANVAS_SIZE - text_w) // 2, (CANVAS_SIZE - text_h) // 2), mask=fontimage)
-            
+
     #save the picture
     img.save(f"photos/LGMSH.png")
-    return "photos/LGMSH.png"
-    
-    
-def draw_line(row, col, CANVAS_SIZE, DENSITY, draw, color_of_lines):
+    return f"photos/LGMSH.png"
+
+
+def draw_line(row, col, CANVAS_SIZE, DENSITY, draw, color_of_lines, pattern):
     lower_left = (
         (col * CANVAS_SIZE / DENSITY),
         (row * CANVAS_SIZE / DENSITY)
@@ -73,14 +76,71 @@ def draw_line(row, col, CANVAS_SIZE, DENSITY, draw, color_of_lines):
         (col * CANVAS_SIZE / DENSITY),
         ((row + 1) * CANVAS_SIZE / DENSITY)
     )
+    left_mid = (
+        (col * CANVAS_SIZE / DENSITY),
+        ((row + 0.5) * CANVAS_SIZE / DENSITY)
+    )
+    right_mid = (
+        ((col + 1) * CANVAS_SIZE / DENSITY),
+        ((row + 0.5) * CANVAS_SIZE / DENSITY)
+    )
+    up_mid = (
+        ((col + 0.5) * CANVAS_SIZE / DENSITY),
+        ((row + 1) * CANVAS_SIZE / DENSITY)
+    )
+    low_mid = (
+        ((col + 0.5) * CANVAS_SIZE / DENSITY),
+        (row * CANVAS_SIZE / DENSITY)
+    )
 
-    res = random.randint(0, 1)
+    if pattern == 0:
 
-    if res == 0:
-    	draw.line((upper_left[0], upper_left[-1], lower_right[0], lower_right[-1]), fill=random.choice(color_of_lines), width=3)
-    else:
-    	draw.line((lower_left[0], lower_left[-1], upper_right[0], upper_right[-1]), fill=random.choice(color_of_lines), width=3)
-    
-    
+        res = random.randint(0, 3)
+
+        if res == 0:
+       	    draw.line((upper_left[0], upper_left[-1], lower_left[0], lower_left[-1]), fill=random.choice(color_of_lines), width=3)
+        if res == 1:
+    	    draw.line((lower_left[0], lower_left[-1], lower_right[0], lower_right[-1]), fill=random.choice(color_of_lines), width=3)
+        if res == 2:
+    	    draw.line((lower_right[0], lower_right[-1], upper_right[0], upper_right[-1]), fill=random.choice(color_of_lines), width=3)
+        if res == 3:
+    	    draw.line((upper_right[0], upper_right[-1], upper_left[0], upper_left[-1]), fill=random.choice(color_of_lines), width=3)
+
+    if pattern == 1:
+
+        res = random.randint(0, 1)
+
+        if res == 0:
+    	    draw.line((upper_left[0], upper_left[-1], lower_right[0], lower_right[-1]), fill=random.choice(color_of_lines), width=3)
+        else:
+    	    draw.line((lower_left[0], lower_left[-1], upper_right[0], upper_right[-1]), fill=random.choice(color_of_lines), width=3)
+
+    if pattern == 2:
+
+        new_pattern = random.randint(0, 1)
+
+        if new_pattern == 0:
+
+            res = random.randint(0, 3)
+
+            if res == 0:
+       	        draw.line((upper_left[0], upper_left[-1], lower_left[0], lower_left[-1]), fill=random.choice(color_of_lines), width=3)
+            if res == 1:
+    	        draw.line((lower_left[0], lower_left[-1], lower_right[0], lower_right[-1]), fill=random.choice(color_of_lines), width=3)
+            if res == 2:
+    	        draw.line((lower_left[0], lower_left[-1], upper_right[0], upper_right[-1]), fill=random.choice(color_of_lines), width=3)
+            if res == 3:
+    	        draw.line((upper_right[0], upper_right[-1], upper_left[0], upper_left[-1]), fill=random.choice(color_of_lines), width=3)
+
+        if new_pattern == 1:
+
+            res = random.randint(0, 1)
+
+            if res == 0:
+    	        draw.line((upper_left[0], upper_left[-1], lower_right[0], lower_right[-1]), fill=random.choice(color_of_lines), width=3)
+            else:
+    	        draw.line((lower_left[0], lower_left[-1], upper_right[0], upper_right[-1]), fill=random.choice(color_of_lines), width=3)
+
+
 if __name__ == "__main__":
     print(create_picture())
