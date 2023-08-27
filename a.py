@@ -8,6 +8,7 @@ from telebot import types
 from mem import generate_meme
 from datefact import factsoftheday
 from logo import create_picture
+from botime import get_next_event
 
 API_TOKEN = '6625958872:AAGbyN_pk5Zcf2jDcZFTTYCZbu4YA_beYTs'
 
@@ -18,9 +19,14 @@ bot = telebot.TeleBot(API_TOKEN)
 @bot.message_handler(commands=['help', 'start'])
 def send_welcome(message):
     bot.reply_to(message, """\
-Hi there, I am EchoBot.
-I am here to echo your kind words back to you. Just say anything nice and I'll say the exact same thing to you!\
+Привет! Я бот, который поможет тебе получить интересные сведения и информацию о ЛГМШ. Вот список команд, которые я могу выполнить:
+- /logo: Сгенерировать случайное лого ЛГМШ.
+- /datefact: Рассказать случайный факт о сегодняшнем дне в истории.
+- /next_event: Показать сколько времени осталось до следующего события и какое оно будет.
+Просто введи одну из этих команд, и я с удовольствием поделюсь интересными сведениями!\
 """)
+    photo=open('welcome.jpg','rb')
+    bot.send_photo(message.from_user.id, photo,"Отправь фото и текст, чтобы сделать мем")
 
 text=''
 text_commands=[]
@@ -85,6 +91,10 @@ def send_logo(message):
     bot.send_photo(message.from_user.id,photo)
     os.remove(name)
 
+
+@bot.message_handler(commands=['next_event'])
+def send_next_event(message):
+    bot.reply_to(message,get_next_event())
 
 
 # Handle all other messages with content_type 'text' (content_types defaults to ['text'])
