@@ -1,5 +1,6 @@
 from datetime import datetime  
 import requests
+from deep_translator import GoogleTranslator
 
 def factsoftheday():
     summ = [0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335, 366]
@@ -34,7 +35,9 @@ def factsoftheday():
     u = a
     z = "/date"
     response = requests.get(s + str(u) + z)
-    return response.text
+
+    translated = GoogleTranslator(source='auto', target='ru').translate(response.text)
+    return translated
 
 if __name__ == '__main__':
     print(factsoftheday())
