@@ -34,6 +34,7 @@ command_to_text = {}
 
 @bot.message_handler(commands=['datefact'])
 def give_fact(message):
+
     bot.reply_to(message,factsoftheday())
 
 @bot.message_handler(commands=['add_command'])
@@ -86,9 +87,11 @@ def download_photo(message):
 
 @bot.message_handler(commands=['logo'])
 def send_logo(message):
+    markup = types.ReplyKeyboardRemove(selective=False)
+
     name = create_picture()
     photo = open(name, 'rb')
-    bot.send_photo(message.from_user.id,photo)
+    bot.send_photo(message.from_user.id,photo, reply_markup=markup)
     os.remove(name)
 
 
